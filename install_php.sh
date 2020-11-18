@@ -37,10 +37,15 @@ apt-get install -y \
 # Create directory to be used as an installation target
 mkdir /usr/local/php-$version
 
-git clone https://github.com/php/php-src.git
-cd php-src
+git clone --single-branch --branch "PHP-$version" --depth 1 https://github.com/php/php-src.git
 # Exit if non-existing PHP version is supplied
-git checkout PHP-$version || { echo "PHP version $version not found!" ; exit 1; }
+if [ $? -neq 0 ]; then
+  echo "PHP version $version not found!";
+  exit 1;
+fi
+
+cd php-src
+
 ./buildconf --force
 
 CONFIGURE_STRINGS="--enable-bcmath \
@@ -68,6 +73,8 @@ CONFIGURE_STRINGS="--enable-bcmath \
                    --enable-zip \
                    --prefix=/usr/local/php-$version \
                    --with-bz2 \
+                   --with-xsl \
+                   --with-sodium \
                    --with-config-file-scan-dir=/usr/local/php-$version/etc/conf.d \
                    --with-curl \
                    --with-fpm-group=www-data \
@@ -81,7 +88,7 @@ CONFIGURE_STRINGS="--enable-bcmath \
                    --with-mysqli=mysqlnd \
                    --with-mysql-sock=/var/run/mysqld/mysqld.sock \
                    --with-openssl \
-                   --without-pear \
+                   --with-pear \
                    --with-pdo-mysql=mysqlnd \
                    --with-pdo-sqlite \
                    --with-png-dir \

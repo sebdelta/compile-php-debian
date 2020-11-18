@@ -39,7 +39,7 @@ mkdir /usr/local/php-$version
 
 git clone --single-branch --branch "PHP-$version" --depth 1 https://github.com/php/php-src.git
 # Exit if non-existing PHP version is supplied
-if [ $? -neq 0 ]; then
+if [ $? -ne 0 ]; then
   echo "PHP version $version not found!";
   exit 1;
 fi
